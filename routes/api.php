@@ -13,3 +13,7 @@ Route::get('/tweets', function () {
         ->latest()
         ->paginate(10);
 });
+
+Route::get('/tweets/{tweet}', function (Tweet $tweet) {
+    return $tweet->load('user:id,name,username,avatar');
+});
