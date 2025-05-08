@@ -11,6 +11,8 @@ class Tweet extends Model
     /** @use HasFactory<\Database\Factories\TweetsFactory> */
     use HasFactory;
 
+    protected $guarded = [];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
