@@ -23,13 +23,20 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $link = collect(['twitter.com', 'instagram.com', 'facebook.com', 'linkedIn.com', 'gitHub.com'])->random();
+
         return [
             'name' => fake()->name(),
             'username' => $this->faker->unique()->userName(),
             'avatar' => 'https://i.pravatar.cc/150?img='.$this->faker->numberBetween(1, 70),
+            'profile' => fake()->sentence(14),
+            'location' => fake()->city() . ', ' . fake()->country(),
+            'link' => 'https://' . $link. '.com',
+            'link_text' => $link,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'created_at' => fake()->dateTimeBetween('-5 years', 'now'),
             'remember_token' => Str::random(10),
         ];
     }
