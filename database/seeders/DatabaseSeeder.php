@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Tweet;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,6 +13,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        User::factory()->create([
+            'email' => 'johnkarlo.315@gmail.com',
+            'name' => 'John Karlo',
+            'username' => 'johnkarlo'
+        ]);
+
         Tweet::factory(100)->create();
     }
 }
