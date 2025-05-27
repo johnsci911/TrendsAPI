@@ -73,8 +73,27 @@ Route::post('/login', function (Request $request) {
     ], 201);
 });
 
-ROute::post('/logout', function (Request $request) {
+Route::post('/register', function (Request $request) {
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email|unique:users',
+        'username' => 'required|min:4|unique:users',
+        'password' => 'required|confirmed|min:6',
+    ]);
+
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'username' => $request->username,
+        'password' => Hash::make($request->password),
+    ]);
+
+    return response()->json($user, 201);
+});
+
+Route::post('/logout', function (Request $request) {
     $request->user()->currentAccessToken()->delete();
 
     return response()->json('Logged out successfully.', 200);
 })->middleware('auth:sanctum');
+
