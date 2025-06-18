@@ -3,6 +3,7 @@
 use App\Models\Tweet;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
@@ -11,8 +12,16 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/tweets', function () {
+Route::get('/tweets-all', function () {
     return Tweet::with('user:id,name,username,avatar')
+        ->latest()
+        ->paginate(10);
+});
+
+Route::middleware('auth:sanctum')->get('/tweets', function () {
+    $followers = Auth::user()->follows->pluck('id');
+
+    return Tweet::with('user:id,name,username,avatar')->whereIn('user_id', $followers)
         ->latest()
         ->paginate(10);
 });
@@ -21,13 +30,15 @@ Route::get('/tweets/{tweet}', function (Tweet $tweet) {
     return $tweet->load('user:id,name,username,avatar');
 });
 
-Route::post('/tweets', function (Request $request) {
+Route::middleware('auth:sanctum')->post('/tweets', function (Request $request) {
     $request->validate([
         'body' => ['required', 'string','max:255'],
     ]);
 
+    $userId = Auth::id();
+
     return Tweet::create([
-        'user_id' => 1,
+        'user_id' => $userId,
         'body' => $request->body,
     ]);
 });
@@ -87,6 +98,8 @@ Route::post('/register', function (Request $request) {
         'username' => $request->username,
         'password' => Hash::make($request->password),
     ]);
+
+    $user->follows()->attach($user);
 
     return response()->json($user, 201);
 });

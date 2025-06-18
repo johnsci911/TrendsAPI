@@ -31,7 +31,7 @@ class UserFactory extends Factory
             'avatar' => 'https://i.pravatar.cc/150?img='.$this->faker->numberBetween(1, 70),
             'profile' => fake()->sentence(14),
             'location' => fake()->city() . ', ' . fake()->country(),
-            'link' => 'https://' . $link. '.com',
+            'link' => 'https://' . $link,
             'link_text' => $link,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
