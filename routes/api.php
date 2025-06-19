@@ -110,3 +110,29 @@ Route::post('/logout', function (Request $request) {
     return response()->json('Logged out successfully.', 200);
 })->middleware('auth:sanctum');
 
+Route::middleware('auth:sanctum')->post('/follow/{user}', function (User $user) {
+    $authenticatedUser = Auth::user();
+
+    /** @var User $authenticatedUser */
+    $authenticatedUser->follow($user);
+
+    return response()->json('followed', 201);
+});
+
+Route::middleware('auth:sanctum')->post('/unfollow/{user}', function (User $user) {
+    $authenticatedUser = Auth::user();
+
+    /** @var User $authenticatedUser */
+    $authenticatedUser->unfollow($user);
+
+    return response()->json('unfollowed', 200);
+});
+
+Route::middleware('auth:sanctum')->get('/is_following/{user}', function (User $user) {
+    $authenticatedUser = Auth::user();
+
+    /** @var User $authenticatedUser */
+    $isFollowing = $authenticatedUser->isFollowing($user);
+
+    return response()->json($isFollowing, 200);
+});
