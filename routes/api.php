@@ -104,6 +104,12 @@ Route::post('/register', function (Request $request) {
     return response()->json($user, 201);
 });
 
+Route::middleware('auth:sanctum')->delete('/tweets/{tweet}', function (Tweet $tweet) {
+    abort_if($tweet->user->id !== Auth::id(), 403);
+
+    return response()->json($tweet->delete(), 200);
+});
+
 Route::post('/logout', function (Request $request) {
     $request->user()->currentAccessToken()->delete();
 
